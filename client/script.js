@@ -8,20 +8,32 @@ socket.on("connect", () => {
     console.log(socket.id);
 });
 
-socket.on("message", (arg) => {
-    console.log(arg[0].position.latitude);
-    L.marker([arg[0].position.latitude, arg[0].position.longitude]).addTo(map)
-    
-    setTimeout(function removeMarker() {
-        L.marker().removeTo(map)
-    }, 3000);
-})
+var count = 0;
 
-socket.on("hello", (arg) => {
-    console.log(arg);
+socket.on("message", (arg) => {
+
+    console.log("Chiamata Effettuata") + "_" + count;
+    count++
+    var marker = new Array();
+    arg.forEach((element, i) => {        
+        var LamMarker = new L.marker([element.position.latitude, element.position.longitude]).bindTooltip("Id: " + element.route_id + "\n current_stop: " + element.current_stop).openTooltip();
+        marker.push(LamMarker);
+        map.addLayer(marker[i])
+
+    });
+    setTimeout(function () {
+        arg.forEach((element, i) => {
+            map.removeLayer(marker[i])
+        })
+    }, 10700)
 })
 
 var map = L.map('map').setView([41.90007781982422, 12.465636253356934], 13);
+
+var searchbox = L.control.searchbox({
+    position: 'topright',
+    expand: 'left'
+}).addTo(map);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);

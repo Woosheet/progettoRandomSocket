@@ -21,14 +21,14 @@ def job():
             objAtac = []
 
             for entity in feed.entity:
-                if(entity.id == "6"):
-                    objAtac.append({
-                        "id": entity.id,
-                        "position": {
-                            "latitude": entity.vehicle.position.latitude,
-                            "longitude": entity.vehicle.position.longitude,
-                        }
-                    })
+                objAtac.append({
+                    "route_id": entity.vehicle.trip.route_id,
+                    "position": {
+                    "latitude": entity.vehicle.position.latitude,
+                    "longitude": entity.vehicle.position.longitude,
+                    },
+                    "current_stop": entity.vehicle.current_stop_sequence
+                })
 
             json_object = json.dumps(objAtac, indent=4)
             jsonObj = json.loads(json_object)
